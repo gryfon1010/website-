@@ -8,7 +8,12 @@
       "Bash(tasklist *)",
       "Bash(taskkill *)",
       "Bash(start *)",
-      "Bash(deploy-prepare.bat)"
+      "Bash(deploy-prepare.bat)",
+      "Bash(pnpm install *)",
+      "Bash(npm install)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)"
     ]
   },
   "$version": 3
