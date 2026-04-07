@@ -1,0 +1,365 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  OWNER
+  RENTER
+  ADMIN
+}
+
+enum VerificationStatus {
+  VERIFIED
+  PENDING
+  UNVERIFIED
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  CANCELLED
+}
+
+enum NotificationType {
+  BOOKING
+  MESSAGE
+  LISTING
+  PAYMENT
+  SYSTEM
+  DISPUTE
+}
+
+enum DisputeStatus {
+  OPEN
+  UNDER_REVIEW
+  RESOLVED
+  CLOSED
+}
+
+enum PaymentProvider {
+  STRIPE
+}
+
+enum VerificationDocumentType {
+  ID
+  LICENSE
+  PASSPORT
+  ADDRESS
+}
+
+model User {
+  id                     String                     @id @default(cuid())
+  email                  String                     @unique
+  passwordHash           String
+  name                   String
+  phone                  String?                    @unique
+  phoneVerified          Boolean                    @default(false)
+  phoneVerificationCode  String?
+  phoneVerificationExpiresAt DateTime?
+  twoFactorSecret        String?
+  twoFactorEnabled       Boolean                    @default(false)
+  twoFactorBackupCodes   String[]
+  verificationStatus     VerificationStatus         @default(PENDING)
+  rating                 Float                      @default(0)
+  reviewCount            Int                        @default(0)
+  trustScore             Int                        @default(0)
+  role                   UserRole                   @default(RENTER)
+  latitude               Float?
+  longitude              Float?
+  createdAt              DateTime                   @default(now())
+  updatedAt              DateTime                   @updatedAt
+  refreshTokens          RefreshToken[]
+  items                  Item[]                     @relation("OwnerItems")
+  ownerBookings          Booking[]                  @relation("OwnerBookings")
+  renterBookings         Booking[]                  @relation("RenterBookings")
+  reviewsWritten         Review[]                   @relation("ReviewAuthor")
+  reviewsReceived        Review[]                   @relation("ReviewTarget")
+  notifications          Notification[]
+  conversationMembers    ConversationParticipant[]
+  messages               Message[]
+  openedDisputes         Dispute[]                  @relation("OpenedDisputes")
+  renterDisputes         Dispute[]                  @relation("RenterDisputes")
+  ownerDisputes          Dispute[]                  @relation("OwnerDisputes")
+  verificationDocuments  VerificationDocument[]
+
+  @@index([role])
+  @@index([verificationStatus])
+  @@index([location])
+}
+
+model RefreshToken {
+  id         String    @id @default(cuid())
+  tokenHash  String    @unique
+  expiresAt  DateTime
+  revokedAt  DateTime?
+  createdAt  DateTime  @default(now())
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+
+  @@index([userId, revokedAt])
+}
+
+model Item {
+  id                  String    @id @default(cuid())
+  owner               User      @relation("OwnerItems", fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId             String
+  title               String
+  category            String
+  description         String
+  pricePerDay         Int
+  location            String
+  latitude            Float?
+  longitude           Float?
+  images              String[]
+  features            String[]
+  insuranceEnabled    Boolean   @default(true)
+  cancellationPolicy  String
+  isActive            Boolean   @default(true)
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  bookings            Booking[]
+  reviews             Review[]
+  conversations       Conversation[]
+  disputes            Dispute[]
+
+  @@index([ownerId])
+  @@index([category, isActive])
+  @@index([location])
+  @@index([pricePerDay])
+}
+
+model Booking {
+  id                 String        @id @default(cuid())
+  item               Item          @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  itemId             String
+  owner              User          @relation("OwnerBookings", fields: [ownerId], references: [id], onDelete: Restrict)
+  ownerId            String
+  renter             User          @relation("RenterBookings", fields: [renterId], references: [id], onDelete: Restrict)
+  renterId           String
+  startDate          DateTime
+  endDate            DateTime
+  quantity           Int
+  dayCount           Int
+  subtotal           Int
+  serviceFee         Int
+  damageWaiver       Int
+  totalPrice         Int
+  status             BookingStatus @default(PENDING)
+  paymentStatus      PaymentStatus @default(PENDING)
+  paymentReleaseAt   DateTime?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  payment            Payment?
+  review             Review?
+  conversation       Conversation?
+  disputes           Dispute[]
+
+  @@index([itemId, startDate, endDate])
+  @@index([ownerId, status])
+  @@index([renterId, status])
+}
+
+model Payment {
+  id                      String         @id @default(cuid())
+  booking                 Booking        @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  bookingId               String         @unique
+  provider                PaymentProvider
+  stripePaymentIntentId   String?        @unique
+  stripeCheckoutSessionId String?        @unique
+  amount                  Int
+  currency                String         @default("gbp")
+  status                  PaymentStatus  @default(PENDING)
+  releasedAt              DateTime?
+  refundedAt              DateTime?
+  createdAt               DateTime       @default(now())
+  updatedAt               DateTime       @updatedAt
+}
+
+model Payout {
+  id          String   @id @default(cuid())
+  ownerId     String
+  amount      Int
+  status      String   @default("PENDING") // PENDING, PROCESSING, COMPLETED, FAILED
+  stripeId    String?
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  processedAt DateTime?
+  
+  owner User @relation(fields: [ownerId], references: [id])
+  
+  @@index([ownerId, status])
+  @@index([createdAt])
+}
+
+model Review {
+  id           String   @id @default(cuid())
+  item         Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  itemId       String
+  booking      Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  bookingId    String   @unique
+  author       User     @relation("ReviewAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  authorId     String
+  targetUser   User     @relation("ReviewTarget", fields: [targetUserId], references: [id], onDelete: Cascade)
+  targetUserId String
+  rating       Int
+  comment      String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([itemId])
+  @@index([targetUserId])
+}
+
+model Conversation {
+  id            String                    @id @default(cuid())
+  booking       Booking?                  @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+  bookingId     String?                   @unique
+  item          Item                      @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  itemId        String
+  lastMessageAt DateTime                  @default(now())
+  createdAt     DateTime                  @default(now())
+  updatedAt     DateTime                  @updatedAt
+  participants  ConversationParticipant[]
+  messages      Message[]
+
+  @@index([itemId, lastMessageAt])
+}
+
+model ConversationParticipant {
+  id             String        @id @default(cuid())
+  conversation    Conversation  @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  conversationId  String
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          String
+  joinedAt        DateTime      @default(now())
+  lastReadAt      DateTime?
+
+  @@unique([conversationId, userId])
+  @@index([userId, lastReadAt])
+}
+
+model Message {
+  id             String        @id @default(cuid())
+  conversation    Conversation  @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  conversationId  String
+  sender          User          @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  senderId        String
+  content         String
+  createdAt       DateTime      @default(now())
+
+  @@index([conversationId, createdAt])
+}
+
+model Notification {
+  id         String           @id @default(cuid())
+  user       User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  type       NotificationType
+  title      String
+  body       String
+  href       String?
+  readAt     DateTime?
+  createdAt  DateTime         @default(now())
+
+  @@index([userId, readAt, createdAt])
+}
+
+model Dispute {
+  id           String        @id @default(cuid())
+  booking      Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  bookingId    String
+  item         Item          @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  itemId       String
+  openedBy     User          @relation("OpenedDisputes", fields: [openedById], references: [id], onDelete: Cascade)
+  openedById   String
+  renter       User          @relation("RenterDisputes", fields: [renterId], references: [id], onDelete: Cascade)
+  renterId     String
+  owner        User          @relation("OwnerDisputes", fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId      String
+  title        String
+  description  String
+  evidenceUrls String[]
+  status       DisputeStatus @default(OPEN)
+  resolution   String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@index([bookingId])
+  @@index([ownerId, status])
+  @@index([renterId, status])
+}
+
+model VerificationDocument {
+  id         String                   @id @default(cuid())
+  user       User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  type       VerificationDocumentType
+  url        String
+  status     VerificationStatus       @default(PENDING)
+  createdAt  DateTime                 @default(now())
+  updatedAt  DateTime                 @updatedAt
+
+  @@index([userId, status])
+}
+
+model Admin {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  role         String   @default("moderator") // moderator, admin, superadmin
+  permissions  String[]
+  active       Boolean  @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  auditLogs    AuditLog[]
+  
+  @@index([email])
+  @@index([role])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  adminId    String?
+  action     String   // CREATE, UPDATE, DELETE, SUSPEND, BAN, etc.
+  entity     String   // USER, ITEM, BOOKING, DISPUTE, etc.
+  entityId   String?
+  metadata   Json?
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+  
+  admin      Admin?   @relation(fields: [adminId], references: [id], onDelete: SetNull)
+  
+  @@index([action, createdAt])
+  @@index([entity, entityId])
+  @@index([adminId, createdAt])
+}
+
+model PushSubscription {
+  id        String @id @default(cuid())
+  userId    String
+  endpoint  String
+  keys      Json
+  createdAt DateTime @default(now())
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, endpoint])
+  @@index([userId])
+}

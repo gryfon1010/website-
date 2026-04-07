@@ -1,0 +1,30 @@
+# Backend API
+backend/
+node_modules/
+dist/
+.env
+.env.local
+*.log
+
+# Database
+prisma/migrations/
+
+# Uploads
+server/uploads/*
+!server/uploads/.gitkeep
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+*.tsbuildinfo
+
+# Test coverage
+coverage/

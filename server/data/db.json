@@ -1,0 +1,268 @@
+{
+  "users": [
+    {
+      "id": "user-owner",
+      "email": "owner@rentconnect.dev",
+      "name": "Sarah Photography",
+      "phone": "+44 7700 000111",
+      "location": "London",
+      "bio": "Professional photographer renting premium gear.",
+      "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80",
+      "verificationStatus": "verified",
+      "rating": 4.9,
+      "reviewCount": 41,
+      "trustScore": 97,
+      "joinedAt": "2026-03-29T17:19:35.784Z",
+      "role": "owner",
+      "passwordHash": "$2b$10$25Dw1ed1cMRqrQXAn1O54OPAmtDpl.5r7tTSQYDlbuISFEphHmsAu"
+    },
+    {
+      "id": "user-renter",
+      "email": "renter@rentconnect.dev",
+      "name": "Alex Walker",
+      "phone": "+44 7700 00 0222",
+      "location": "Manchester",
+      "bio": "Weekend adventurer and frequent renter. in Alll",
+      "avatar": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=200&q=80",
+      "verificationStatus": "verified",
+      "rating": 4.7,
+      "reviewCount": 12,
+      "trustScore": 88,
+      "joinedAt": "2026-03-29T17:19:36.031Z",
+      "role": "renter",
+      "passwordHash": "$2b$10$0TutseFciBMY1aGRMtSTL.z2RdgFQ.7qh/dhPIzikL8zSJSolM3Ha"
+    },
+    {
+      "id": "9BSLpJ6-TTAF1QIqnVGGj",
+      "email": "demo@example.com",
+      "name": "demo",
+      "phone": "",
+      "location": "London",
+      "bio": "",
+      "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80",
+      "verificationStatus": "pending",
+      "rating": 5,
+      "reviewCount": 0,
+      "trustScore": 80,
+      "joinedAt": "2026-03-30T12:45:47.248Z",
+      "role": "renter",
+      "passwordHash": "$2b$10$4VChYj8EP0CZiorFJZURre4tKdtXv5.7Wyyuhg07fHSC2H0ErIC9G"
+    },
+    {
+      "id": "MwuyB-n_CNSJvUKGKoQSJ",
+      "email": "aliraza@gmail.com",
+      "name": "arham fared",
+      "phone": "",
+      "location": "London",
+      "bio": "",
+      "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80",
+      "verificationStatus": "pending",
+      "rating": 5,
+      "reviewCount": 0,
+      "trustScore": 80,
+      "joinedAt": "2026-04-01T16:53:44.786Z",
+      "role": "renter",
+      "passwordHash": "$2b$10$k1loQUydwuCPQzR2eLZK1uziL2H0Xa6PZ6aXvh9wC1edIztmJIh5q"
+    }
+  ],
+  "listings": [
+    {
+      "id": "n2Sv9--wChTwE2N4AtghS",
+      "ownerId": "MwuyB-n_CNSJvUKGKoQSJ",
+      "title": "my account",
+      "category": "Carpet Cleaner",
+      "description": "my account is ready to workin",
+      "pricePerDay": 2,
+      "location": "Pakistan",
+      "images": [
+        "/uploads/1775063771080-WhatsApp-Image-2026-04-01-at-2.34.58-PM.jpeg"
+      ],
+      "features": [],
+      "insuranceEnabled": true,
+      "cancellationPolicy": "If cancelled 5 days before the rental period, 100% refund. If cancelled 3 days before, 50% refund.",
+      "isActive": true,
+      "createdAt": "2026-04-01T17:16:11.120Z",
+      "updatedAt": "2026-04-01T17:16:11.120Z"
+    },
+    {
+      "id": "item-camera",
+      "ownerId": "user-owner",
+      "title": "Canon EOS R5 Creator Kit",
+      "category": "Photography",
+      "description": "Flagship mirrorless camera bundle with lenses, tripod, and backup batteries.",
+      "pricePerDay": 55,
+      "location": "London",
+      "images": [
+        "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1502920917128-1aa500764ce7?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "features": [
+        "2 lenses",
+        "Tripod",
+        "ND filters",
+        "Battery pack"
+      ],
+      "insuranceEnabled": true,
+      "cancellationPolicy": "Free cancellation up to 48 hours before pickup.",
+      "isActive": true,
+      "createdAt": "2026-03-29T17:19:36.228Z",
+      "updatedAt": "2026-03-29T17:19:36.228Z"
+    },
+    {
+      "id": "item-camping",
+      "ownerId": "user-renter",
+      "title": "4-Person Camping Bundle",
+      "category": "Camping",
+      "description": "Tent, sleeping mats, stove, and lanterns for quick weekend trips.",
+      "pricePerDay": 28,
+      "location": "Manchester",
+      "images": [
+        "https://images.unsplash.com/photo-1504280390368-3971f827c3d9?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "features": [
+        "Tent",
+        "Stove",
+        "Lantern",
+        "2 mats"
+      ],
+      "insuranceEnabled": true,
+      "cancellationPolicy": "Flexible cancellation up to 24 hours before pickup.",
+      "isActive": true,
+      "createdAt": "2026-03-29T17:19:36.228Z",
+      "updatedAt": "2026-03-29T17:19:36.228Z"
+    }
+  ],
+  "bookings": [
+    {
+      "id": "booking-1",
+      "itemId": "item-camera",
+      "ownerId": "user-owner",
+      "renterId": "user-renter",
+      "startDate": "2026-04-01T17:19:36.228Z",
+      "endDate": "2026-04-04T17:19:36.228Z",
+      "quantity": 1,
+      "dayCount": 3,
+      "subtotal": 165,
+      "serviceFee": 12,
+      "damageWaiver": 15,
+      "totalPrice": 192,
+      "status": "confirmed",
+      "paymentStatus": "paid",
+      "createdAt": "2026-03-29T17:19:36.228Z"
+    }
+  ],
+  "reviews": [
+    {
+      "id": "dbkxeijzsFkUPsz-t4ghT",
+      "itemId": "item-camera",
+      "bookingId": "booking-1",
+      "authorId": "user-renter",
+      "targetUserId": "user-owner",
+      "rating": 5,
+      "comment": "Gear was spotless and pickup was smooth.",
+      "createdAt": "2026-03-22T17:19:36.229Z"
+    }
+  ],
+  "conversations": [
+    {
+      "id": "conversation-1",
+      "itemId": "item-camera",
+      "bookingId": "booking-1",
+      "participantIds": [
+        "user-owner",
+        "user-renter"
+      ],
+      "updatedAt": "2026-03-31T17:58:49.337Z"
+    }
+  ],
+  "messages": [
+    {
+      "id": "dr3uKxzuhfPCKAeMsn7n9",
+      "conversationId": "conversation-1",
+      "senderId": "user-renter",
+      "content": "Hi, is pickup on Friday evening okay?",
+      "createdAt": "2026-03-29T16:19:36.229Z"
+    },
+    {
+      "id": "7x3ErWgi4kY9sM9TuNJ91",
+      "conversationId": "conversation-1",
+      "senderId": "user-owner",
+      "content": "Yes, 6pm works. I will share the exact address tomorrow.",
+      "createdAt": "2026-03-29T16:49:36.229Z"
+    },
+    {
+      "id": "gBwiAVdHZ4-AuyIngY_8l",
+      "conversationId": "conversation-1",
+      "senderId": "user-renter",
+      "content": "hallo",
+      "createdAt": "2026-03-30T16:44:48.477Z"
+    },
+    {
+      "id": "g0lrrzuWTrbr6i4xi1sok",
+      "conversationId": "conversation-1",
+      "senderId": "user-renter",
+      "content": "hallo",
+      "createdAt": "2026-03-31T17:58:49.337Z"
+    }
+  ],
+  "notifications": [
+    {
+      "id": "Qm5xOVx3ZaogtumBWKrsG",
+      "userId": "MwuyB-n_CNSJvUKGKoQSJ",
+      "read": true,
+      "createdAt": "2026-04-01T17:16:11.122Z",
+      "type": "listing",
+      "title": "Listing published",
+      "body": "my account is now live on RentConnect.",
+      "href": "/dashboard?tab=listings"
+    },
+    {
+      "id": "ZnWIyfC2FEmkxPcDv2HpY",
+      "userId": "user-owner",
+      "read": false,
+      "createdAt": "2026-03-31T17:58:49.339Z",
+      "type": "message",
+      "title": "New message",
+      "body": "Alex Walker: hallo",
+      "href": "/dashboard?tab=messages&conversationId=conversation-1"
+    },
+    {
+      "id": "q6gQ9_E32MHR7sy4ZylPQ",
+      "userId": "user-owner",
+      "read": false,
+      "createdAt": "2026-03-30T16:44:48.478Z",
+      "type": "message",
+      "title": "New message",
+      "body": "Alex Walker: hallo",
+      "href": "/dashboard?tab=messages&conversationId=conversation-1"
+    },
+    {
+      "id": "dY62AkO2AEU8LIXl6P6RZ",
+      "userId": "user-owner",
+      "type": "booking",
+      "title": "Upcoming booking",
+      "body": "Alex Walker is collecting the Canon EOS R5 kit in 3 days.",
+      "href": "/dashboard?tab=bookings",
+      "read": false,
+      "createdAt": "2026-03-29T17:19:36.228Z"
+    },
+    {
+      "id": "CTyj6jjLfBFw3iiF4y3Cr",
+      "userId": "user-renter",
+      "type": "message",
+      "title": "New message",
+      "body": "Sarah Photography replied to your conversation.",
+      "href": "/dashboard?tab=messages&conversationId=conversation-1",
+      "read": true,
+      "createdAt": "2026-03-29T17:19:36.228Z"
+    }
+  ],
+  "conversationReads": [
+    {
+      "conversationId": "conversation-1",
+      "userId": "user-renter",
+      "lastReadAt": "2026-04-03T15:12:46.310Z"
+    }
+  ],
+  "paymentSessions": []
+}
