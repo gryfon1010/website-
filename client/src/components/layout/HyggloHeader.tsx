@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Search, Menu, X, MapPin, Calendar as CalendarIcon, Globe, User } from "lucide-react";
 import { useLocation } from "wouter";
+import { toast } from "sonner";
 import { useAuth } from "@/features/auth/AuthContext";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,12 +28,17 @@ export function HyggloHeader() {
   const [locationSearch, setLocationSearch] = useState("");
 
   const handleSearch = () => {
-    // We could pass date params here in the future
+    // Build search URL with location if set
+    const params = new URLSearchParams();
     if (searchQuery.trim()) {
-      navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
-    } else {
-      navigate(`/search`);
+      params.set('q', searchQuery);
     }
+    if (location) {
+      params.set('location', location);
+    }
+    
+    const queryString = params.toString();
+    navigate(`/search${queryString ? `?${queryString}` : ''}`);
   };
 
   const formatDateLabel = () => {
@@ -157,7 +163,11 @@ export function HyggloHeader() {
                   filteredLocations.map((loc) => (
                     <button
                       key={loc}
-                      onClick={() => { setLocation(loc); document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' })); }}
+                      onClick={() => { 
+                        setLocation(loc); 
+                        toast.success(`Location set to ${loc}`);
+                        document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' })); 
+                      }}
                       className="text-left px-3 py-2 rounded-md hover:bg-[var(--cta-green)] hover:text-white transition-colors text-sm font-medium"
                     >
                       {loc}
@@ -167,7 +177,11 @@ export function HyggloHeader() {
                   <div className="px-3 py-2 text-sm text-gray-500">
                     Search for "{locationSearch}" everywhere.
                     <button 
-                      onClick={() => { setLocation(locationSearch); document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' })); }} 
+                      onClick={() => { 
+                        setLocation(locationSearch); 
+                        toast.success(`Location set to ${locationSearch}`);
+                        document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' })); 
+                      }} 
                       className="block mt-2 text-[var(--cta-green)] hover:underline font-bold"
                     >
                       Use "{locationSearch}"

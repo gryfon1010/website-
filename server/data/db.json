@@ -63,9 +63,43 @@
       "joinedAt": "2026-04-01T16:53:44.786Z",
       "role": "renter",
       "passwordHash": "$2b$10$k1loQUydwuCPQzR2eLZK1uziL2H0Xa6PZ6aXvh9wC1edIztmJIh5q"
+    },
+    {
+      "id": "y8-10ffvxaUX2qHqkYub7",
+      "email": "work@email.com",
+      "name": "work for",
+      "phone": "",
+      "location": "London",
+      "bio": "",
+      "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80",
+      "verificationStatus": "pending",
+      "rating": 5,
+      "reviewCount": 0,
+      "trustScore": 80,
+      "joinedAt": "2026-04-09T17:37:46.940Z",
+      "role": "renter",
+      "passwordHash": "$2b$10$/K68UA0diIqG/BDCz8izJ.jtoOSEISvNE4.KLbpcza5U5/86IHt1S"
     }
   ],
   "listings": [
+    {
+      "id": "qlAVsvvivaj3Oyu7_td_Y",
+      "ownerId": "user-renter",
+      "title": "my item",
+      "category": "Other",
+      "description": "myitem ia best",
+      "pricePerDay": 22,
+      "location": "London",
+      "images": [
+        "/uploads/1775763659265-WhatsApp-Image-2026-04-01-at-2.34.58-PM.jpeg"
+      ],
+      "features": [],
+      "insuranceEnabled": true,
+      "cancellationPolicy": "moderate",
+      "isActive": true,
+      "createdAt": "2026-04-09T19:41:25.901Z",
+      "updatedAt": "2026-04-09T19:41:25.901Z"
+    },
     {
       "id": "n2Sv9--wChTwE2N4AtghS",
       "ownerId": "MwuyB-n_CNSJvUKGKoQSJ",
@@ -130,6 +164,374 @@
       "isActive": true,
       "createdAt": "2026-03-29T17:19:36.228Z",
       "updatedAt": "2026-03-29T17:19:36.228Z"
+    },
+    {
+      "id": "elec-001",
+      "ownerId": "user-owner",
+      "title": "MacBook Pro 16\" M3 Max",
+      "category": "Electronics",
+      "description": "Powerful laptop perfect for video editing, programming, and creative work. Includes charger and carrying case.",
+      "pricePerDay": 45,
+      "location": "London",
+      "images": [
+        "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "features": [
+        "M3 Max chip",
+        "36GB RAM",
+        "1TB SSD",
+        "Carrying case"
+      ],
+      "insuranceEnabled": true,
+      "cancellationPolicy": "Free cancellation up to 48 hours before pickup.",
+      "isActive": true,
+      "createdAt": "2026-04-01T10:00:00.000Z",
+      "updatedAt": "2026-04-01T10:00:00.000Z"
+    },
+    {
+      "id": "elec-002",
+      "ownerId": "user-renter",
+      "title": "Sony WH-1000XM5 Headphones",
+      "category": "Electronics",
+      "description": "Industry-leading noise cancellation headphones. Perfect for travel and focused work.",
+      "pricePerDay": 12,
+      "location": "Birmingham",
+      "images": [
+        "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "features": [
+        "Noise cancelling",
+        "30hr battery",
+        "Carry case",
+        "Aux cable"
+      ],
+      "insuranceEnabled": false,
+      "cancellationPolicy": "Flexible cancellation up to 24 hours before pickup.",
+      "isActive": true,
+      "createdAt": "2026-04-02T10:00:00.000Z",
+      "updatedAt": "2026-04-02T10:00:00.000Z"
+    },
+    {
+      "id": "tool-001",
+      "ownerId": "user-owner",
+      "title": "Bosch Professional Drill Set",
+      "category": "Tools & Garden",
+      "description": "Complete drill set with bits, screws, and carrying case. Perfect for home DIY projects.",
+      "pricePerDay": 18,
+      "location": "Leeds",
+      "images": [
+        "https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "features": [
+        "Cordless",
+        "2 batteries",
+        "50 drill bits",
+        "Case included"
+      ],
+      "insuranceEnabled": true,
+      "cancellationPolicy": "Moderate cancellation policy.",
+      "isActive": true,
+      "createdAt": "2026-04-03T10:00:00.000Z",
+      "updatedAt": "2026-04-03T10:00:00.000Z"
+    },
+    {
+      "id": "tool-002",
+      "ownerId": "user-renter",
+      "title": "Garden Lawn Mower Electric",
+      "category": "Tools & Garden",
+      "description": "Powerful electric lawn mower for medium-sized gardens. Easy to use and store.",
+      "pricePerDay": 25,
+      "location": "Glasgow",
+      "images": [
+        "https://images.unsplash.com/photo-1558905540-21290109218f?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "features": [
+        "Electric powered",
+        "Adjustable height",
+        "Grass box",
+        "Safety switch"
+      ],
+      "insuranceEnabled": false,
+      "cancellationPolicy": "Free cancellation up to 48 hours before pickup.",
+      "isActive": true,
+      "createdAt": "2026-04-04T10:00:00.000Z",
+      "updatedAt": "2026-04-04T10:00:00.000Z"
+    },
+    {
+      "id": "sport-001",
+      "ownerId": "user-owner",
+      "title": "Mountain Bike - Trek Marlin 7",
+      "category": "Sports & Outdoors",
+      "description": "High-quality mountain bike perfect for trails and off-road adventures. Helmet included.",
+      "pricePerDay": 35,
+      "location": "Liverpool",
+      "images": [
+        "https://images.unsplash.com/photo-1544191696-102dbdaeeaa0?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "features": [
+        "29-inch wheels",
+        "Hydraulic brakes",
+        "Helmet included",
+        "Lock included"
+      ],
+      "insuranceEnabled": true,
+      "cancellationPolicy": "Free cancellation up to 48 hours before pickup.",
+      "isActive": true,
+      "createdAt": "2026-04-05T10:00:00.000Z",
+      "updatedAt": "2026-04-05T10:00:00.000Z"
+    },
+    {
+      "id": "sport-002",
+      "ownerId": "user-renter",
+      "title": "Kayak Double Sea Kayak",
+      "category": "Sports & Outdoors",
+      "description": "Stable double kayak perfect for lakes and calm seas. Paddles and life jackets included.",
+      "pricePerDay": 40,
+      "location": "Manchester",
+      "images": [
+        "https://images.unsplash.com/photo-1545477332-854e6b953577?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "features": [
+        "2 paddles",
+        "2 life jackets",
+        "Waterproof bags",
+        "Pump included"
+      ],
+      "insuranceEnabled": true,
+      "cancellationPolicy": "Flexible cancellation up to 24 hours before pickup.",
+      "isActive": true,
+      "createdAt": "2026-04-06T10:00:00.000Z",
+      "updatedAt": "2026-04-06T10:00:00.000Z"
+    },
+    {
+      "id": "party-001",
+      "ownerId": "user-owner",
+      "title": "Party Speaker System JBL",
+      "category": "Party & Events",
+      "description": "Professional Bluetooth speaker system with lights. Perfect for parties and events up to 50 people.",
+      "pricePerDay": 30,
+      "location": "London",
+      "images": [
+        "https://images.unsplash.com/photo-1571266028243-e4733b0f0bb0?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "features": [
+        "Bluetooth connectivity",
+        "LED lights",
+        "Microphone included",
+        "12hr battery"
+      ],
+      "insuranceEnabled": false,
+      "cancellationPolicy": "Moderate cancellation policy.",
+      "isActive": true,
+      "createdAt": "2026-04-07T10:00:00.000Z",
+      "updatedAt": "2026-04-07T10:00:00.000Z"
+    },
+    {
+      "id": "party-002",
+      "ownerId": "user-renter",
+      "title": "Photo Booth with Props",
+      "category": "Party & Events",
+      "description": "Complete photo booth setup with backdrop, props, and instant printing. Great for weddings and parties.",
+      "pricePerDay": 75,
+      "location": "Birmingham",
+      "images": [
+        "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "features": [
+        "DSLR camera",
+        "Backdrop stand",
+        "50+ props",
+        "Instant printer"
+      ],
+      "insuranceEnabled": true,
+      "cancellationPolicy": "Free cancellation up to 5 days before event.",
+      "isActive": true,
+      "createdAt": "2026-04-08T10:00:00.000Z",
+      "updatedAt": "2026-04-08T10:00:00.000Z"
+    },
+    {
+      "id": "home-001",
+      "ownerId": "user-owner",
+      "title": "Dyson V15 Vacuum Cleaner",
+      "category": "Home & Living",
+      "description": "Powerful cordless vacuum with laser detection. Perfect for deep cleaning your home.",
+      "pricePerDay": 20,
+      "location": "Leeds",
+      "images": [
+        "https://images.unsplash.com/photo-1558317374-067fb5f30001?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "features": [
+        "Laser detection",
+        "60min runtime",
+        "Multiple attachments",
+        "Wall mount"
+      ],
+      "insuranceEnabled": false,
+      "cancellationPolicy": "Flexible cancellation up to 24 hours before pickup.",
+      "isActive": true,
+      "createdAt": "2026-04-09T10:00:00.000Z",
+      "updatedAt": "2026-04-09T10:00:00.000Z"
+    },
+    {
+      "id": "home-002",
+      "ownerId": "user-renter",
+      "title": "Projector 4K Home Cinema",
+      "category": "Home & Living",
+      "description": "4K HDR projector with built-in speakers. Transform your living room into a cinema.",
+      "pricePerDay": 35,
+      "location": "Glasgow",
+      "images": [
+        "https://images.unsplash.com/photo-1626379961798-8ed66fa0e7de?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "features": [
+        "4K resolution",
+        "HDR support",
+        "Built-in speakers",
+        "HDMI cables"
+      ],
+      "insuranceEnabled": true,
+      "cancellationPolicy": "Free cancellation up to 48 hours before pickup.",
+      "isActive": true,
+      "createdAt": "2026-04-09T11:00:00.000Z",
+      "updatedAt": "2026-04-09T11:00:00.000Z"
+    },
+    {
+      "id": "fashion-001",
+      "ownerId": "user-owner",
+      "title": "Designer Evening Dress - Size M",
+      "category": "Fashion & Accessories",
+      "description": "Stunning designer evening dress perfect for formal events and galas. Dry cleaned after each use.",
+      "pricePerDay": 45,
+      "location": "London",
+      "images": [
+        "https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "features": [
+        "Size M",
+        "Designer brand",
+        "Dry cleaned",
+        "Garment bag"
+      ],
+      "insuranceEnabled": false,
+      "cancellationPolicy": "Moderate cancellation policy.",
+      "isActive": true,
+      "createdAt": "2026-04-09T12:00:00.000Z",
+      "updatedAt": "2026-04-09T12:00:00.000Z"
+    },
+    {
+      "id": "fashion-002",
+      "ownerId": "user-renter",
+      "title": "Luxury Watch - Rolex Submariner",
+      "category": "Fashion & Accessories",
+      "description": "Iconic luxury watch for special occasions. Comes with certificate and box.",
+      "pricePerDay": 85,
+      "location": "Manchester",
+      "images": [
+        "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "features": [
+        "Authentic Rolex",
+        "Box included",
+        "Certificate",
+        "Insurance included"
+      ],
+      "insuranceEnabled": true,
+      "cancellationPolicy": "Free cancellation up to 7 days before pickup.",
+      "isActive": true,
+      "createdAt": "2026-04-09T13:00:00.000Z",
+      "updatedAt": "2026-04-09T13:00:00.000Z"
+    },
+    {
+      "id": "toy-001",
+      "ownerId": "user-owner",
+      "title": "PlayStation 5 + 5 Games",
+      "category": "Toys & Games",
+      "description": "Latest PS5 console with 5 popular games. Perfect for weekend gaming sessions.",
+      "pricePerDay": 25,
+      "location": "Liverpool",
+      "images": [
+        "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "features": [
+        "PS5 Console",
+        "2 controllers",
+        "5 games",
+        "HDMI cable"
+      ],
+      "insuranceEnabled": true,
+      "cancellationPolicy": "Free cancellation up to 48 hours before pickup.",
+      "isActive": true,
+      "createdAt": "2026-04-09T14:00:00.000Z",
+      "updatedAt": "2026-04-09T14:00:00.000Z"
+    },
+    {
+      "id": "toy-002",
+      "ownerId": "user-renter",
+      "title": "Board Game Collection (20 Games)",
+      "category": "Toys & Games",
+      "description": "Curated collection of 20 popular board games. Perfect for family gatherings and parties.",
+      "pricePerDay": 15,
+      "location": "Birmingham",
+      "images": [
+        "https://images.unsplash.com/photo-1611371805429-8b5c1b2c34ba?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "features": [
+        "20 board games",
+        "Family friendly",
+        "Carrying case",
+        "Game guide"
+      ],
+      "insuranceEnabled": false,
+      "cancellationPolicy": "Flexible cancellation up to 24 hours before pickup.",
+      "isActive": true,
+      "createdAt": "2026-04-09T15:00:00.000Z",
+      "updatedAt": "2026-04-09T15:00:00.000Z"
+    },
+    {
+      "id": "book-001",
+      "ownerId": "user-owner",
+      "title": "Complete Harry Potter Book Set",
+      "category": "Books & Media",
+      "description": "All 7 Harry Potter books in hardcover. Perfect for reading marathons or decoration.",
+      "pricePerDay": 8,
+      "location": "Leeds",
+      "images": [
+        "https://images.unsplash.com/photo-1618666012174-83b441c0bc76?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "features": [
+        "Hardcover editions",
+        "All 7 books",
+        "Excellent condition",
+        "Bookmarks included"
+      ],
+      "insuranceEnabled": false,
+      "cancellationPolicy": "Flexible cancellation.",
+      "isActive": true,
+      "createdAt": "2026-04-09T16:00:00.000Z",
+      "updatedAt": "2026-04-09T16:00:00.000Z"
+    },
+    {
+      "id": "book-002",
+      "ownerId": "user-renter",
+      "title": "Kindle Paperwhite E-Reader",
+      "category": "Books & Media",
+      "description": "Latest Kindle with thousands of free public domain books pre-loaded. Perfect for holidays.",
+      "pricePerDay": 10,
+      "location": "Glasgow",
+      "images": [
+        "https://images.unsplash.com/photo-1592496001020-d31bd830651f?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "features": [
+        "Waterproof",
+        "Weeks of battery",
+        "Case included",
+        "Charging cable"
+      ],
+      "insuranceEnabled": false,
+      "cancellationPolicy": "Flexible cancellation up to 24 hours before pickup.",
+      "isActive": true,
+      "createdAt": "2026-04-09T17:00:00.000Z",
+      "updatedAt": "2026-04-09T17:00:00.000Z"
     }
   ],
   "bookings": [
@@ -172,7 +574,7 @@
         "user-owner",
         "user-renter"
       ],
-      "updatedAt": "2026-03-31T17:58:49.337Z"
+      "updatedAt": "2026-04-09T19:19:07.175Z"
     }
   ],
   "messages": [
@@ -203,9 +605,36 @@
       "senderId": "user-renter",
       "content": "hallo",
       "createdAt": "2026-03-31T17:58:49.337Z"
+    },
+    {
+      "id": "PTPwZj0LG9RM2mycQk6cC",
+      "conversationId": "conversation-1",
+      "senderId": "user-renter",
+      "content": "hallo",
+      "createdAt": "2026-04-09T19:19:07.175Z"
     }
   ],
   "notifications": [
+    {
+      "id": "7-se_hbk5kn_vxbJ1Mvy7",
+      "userId": "user-renter",
+      "read": true,
+      "createdAt": "2026-04-09T19:41:25.903Z",
+      "type": "listing",
+      "title": "Listing published",
+      "body": "my item is now live on RentConnect.",
+      "href": "/dashboard?tab=listings"
+    },
+    {
+      "id": "Ft7ndulN_thF_4j8gB7jy",
+      "userId": "user-owner",
+      "read": false,
+      "createdAt": "2026-04-09T19:19:07.188Z",
+      "type": "message",
+      "title": "New message",
+      "body": "Alex Walker: hallo",
+      "href": "/dashboard?tab=messages&conversationId=conversation-1"
+    },
     {
       "id": "Qm5xOVx3ZaogtumBWKrsG",
       "userId": "MwuyB-n_CNSJvUKGKoQSJ",
@@ -261,7 +690,7 @@
     {
       "conversationId": "conversation-1",
       "userId": "user-renter",
-      "lastReadAt": "2026-04-03T15:12:46.310Z"
+      "lastReadAt": "2026-04-09T20:02:54.202Z"
     }
   ],
   "paymentSessions": []

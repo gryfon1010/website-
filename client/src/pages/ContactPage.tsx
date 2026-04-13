@@ -48,7 +48,7 @@ export default function ContactPage() {
               <button onClick={() => navigate("/about")} className="text-left text-sm font-medium text-[var(--footer-bg)] hover:underline block">
                 About us
               </button>
-              <button onClick={() => navigate("/mission")} className="text-left text-sm font-medium text-[var(--footer-bg)] hover:underline block">
+              <button onClick={() => navigate("/about")} className="text-left text-sm font-medium text-[var(--footer-bg)] hover:underline block">
                 Our mission
               </button>
               <button onClick={() => navigate("/contact")} className="text-left text-sm font-medium text-[var(--logo-color)] hover:underline block">

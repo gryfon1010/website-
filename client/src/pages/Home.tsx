@@ -143,7 +143,7 @@ export default function Home() {
   const featuredItems = items?.slice(0, 8) || [];
 
   return (
-    <HyggloLayout showSearch searchPlaceholder="Search for what you want to rent">
+    <HyggloLayout>
       {/* Hero Section */}
       <section className="relative group">
         <div className="relative h-[600px] md:h-[700px] overflow-hidden rounded-b-[2.5rem] shadow-2xl mx-4 mb-12">

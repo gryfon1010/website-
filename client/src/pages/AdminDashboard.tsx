@@ -216,7 +216,7 @@ export function AdminDashboard() {
           </Button>
 
           <Button variant="outline" className="h-auto p-4 justify-start gap-3" asChild>
-            <a href="/admin/listings">
+            <a href="/dashboard?tab=listings">
               <Package className="w-5 h-5" />
               <div className="text-left">
                 <div className="font-semibold">Review Listings</div>

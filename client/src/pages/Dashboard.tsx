@@ -39,11 +39,12 @@ export default function Dashboard() {
   const messagesQuery = useQuery({
     queryKey: ["chat", "messages", selectedConversationId],
     queryFn: async () => {
+      if (!selectedConversationId) return [];
       const messages = await getMessages(selectedConversationId);
       await markConversationRead(selectedConversationId);
       return messages;
     },
-    enabled: Boolean(selectedConversationId),
+    enabled: Boolean(selectedConversationId) && selectedConversationId !== "",
   });
 
   const listingToggleMutation = useMutation({
@@ -228,54 +229,76 @@ export default function Dashboard() {
 
               <TabsContent value="messages" className="grid lg:grid-cols-[320px_1fr] gap-6">
                 <Card className="p-3 space-y-2">
-                  {dashboardQuery.data.conversations.map((conversation) => (
-                    <button
-                      key={conversation.id}
-                      type="button"
-                      onClick={() => updateUrl("messages", conversation.id)}
-                      className={`w-full text-left rounded-xl p-3 border ${
-                        conversation.id === selectedConversationId ? "border-primary bg-primary/5" : "border-border"
-                      }`}
-                    >
-                      <p className="font-medium">{conversation.participants[0]?.name ?? "Conversation"}</p>
-                      <p className="text-sm text-muted-foreground mt-1">{conversation.lastMessage?.content ?? "No messages yet"}</p>
-                    </button>
-                  ))}
+                  {dashboardQuery.data.conversations.length === 0 ? (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <p className="text-sm">No conversations yet</p>
+                      <p className="text-xs mt-2">Message an item owner to start a conversation</p>
+                    </div>
+                  ) : (
+                    dashboardQuery.data.conversations.map((conversation) => (
+                      <button
+                        key={conversation.id}
+                        type="button"
+                        onClick={() => updateUrl("messages", conversation.id)}
+                        className={`w-full text-left rounded-xl p-3 border ${
+                          conversation.id === selectedConversationId ? "border-primary bg-primary/5" : "border-border"
+                        }`}
+                      >
+                        <p className="font-medium">{conversation.participants[0]?.name ?? "Conversation"}</p>
+                        <p className="text-sm text-muted-foreground mt-1">{conversation.lastMessage?.content ?? "No messages yet"}</p>
+                      </button>
+                    ))
+                  )}
                 </Card>
 
                 <Card className="p-5 space-y-4">
-                  <div className="space-y-3 max-h-[28rem] overflow-auto">
-                    {messagesQuery.data?.map((message) => (
-                      <div key={message.id} className="rounded-xl bg-muted p-3">
-                        <p className="text-sm">{message.content}</p>
-                        <p className="text-xs text-muted-foreground mt-2">{formatDate(message.createdAt)}</p>
+                  {!selectedConversationId ? (
+                    <div className="text-center py-12 text-muted-foreground">
+                      <p className="text-lg">Select a conversation to start messaging</p>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="space-y-3 max-h-[28rem] overflow-auto">
+                        {messagesQuery.isLoading && (
+                          <div className="text-center py-4 text-sm text-muted-foreground">Loading messages...</div>
+                        )}
+                        {messagesQuery.isError && (
+                          <div className="text-center py-4 text-sm text-red-500">Failed to load messages</div>
+                        )}
+                        {messagesQuery.data?.map((message) => (
+                          <div key={message.id} className="rounded-xl bg-muted p-3">
+                            <p className="text-sm">{message.content}</p>
+                            <p className="text-xs text-muted-foreground mt-2">{formatDate(message.createdAt)}</p>
+                          </div>
+                        ))}
+                        {messagesQuery.data?.length === 0 && (
+                          <div className="text-center py-8 text-sm text-muted-foreground">No messages yet. Start the conversation!</div>
+                        )}
                       </div>
-                    ))}
-                  </div>
-                  {selectedConversationId && (
-                    <form
-                      className="space-y-3"
-                      onSubmit={(event) => {
-                        event.preventDefault();
-                        if (draftMessage.trim() && !sendMessageMutation.isPending) {
-                          sendMessageMutation.mutate({ conversationId: selectedConversationId, content: draftMessage });
-                        }
-                      }}
-                    >
-                      <Textarea 
-                        value={draftMessage} 
-                        onChange={(event) => setDraftMessage(event.target.value)} 
-                        rows={4} 
-                        placeholder="Type your message..."
-                        disabled={sendMessageMutation.isPending}
-                      />
-                      <Button 
-                        type="submit" 
-                        disabled={sendMessageMutation.isPending || !draftMessage.trim()}
+                      <form
+                        className="space-y-3"
+                        onSubmit={(event) => {
+                          event.preventDefault();
+                          if (draftMessage.trim() && !sendMessageMutation.isPending) {
+                            sendMessageMutation.mutate({ conversationId: selectedConversationId, content: draftMessage });
+                          }
+                        }}
                       >
-                        {sendMessageMutation.isPending ? "Sending..." : "Send message"}
-                      </Button>
-                    </form>
+                        <Textarea 
+                          value={draftMessage} 
+                          onChange={(event) => setDraftMessage(event.target.value)} 
+                          rows={4} 
+                          placeholder="Type your message..."
+                          disabled={sendMessageMutation.isPending}
+                        />
+                        <Button 
+                          type="submit" 
+                          disabled={sendMessageMutation.isPending || !draftMessage.trim()}
+                        >
+                          {sendMessageMutation.isPending ? "Sending..." : "Send message"}
+                        </Button>
+                      </form>
+                    </>
                   )}
                 </Card>
               </TabsContent>

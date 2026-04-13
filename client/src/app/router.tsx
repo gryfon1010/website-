@@ -33,6 +33,8 @@ const AreaPage = lazy(() => import("@/pages/AreaPage"));
 const BlogPage = lazy(() => import("@/pages/BlogPage"));
 const HelpPage = lazy(() => import("@/pages/HelpPage"));
 const SupportPage = lazy(() => import("@/pages/SupportPage"));
+const HowItWorksPage = lazy(() => import("@/pages/HowItWorksPage"));
+const AreasPage = lazy(() => import("@/pages/AreasPage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 function RouteFallback() {
@@ -121,12 +123,14 @@ export function AppRouter() {
         <Route path="/privacy" component={PrivacyPage} />
         <Route path="/partnerships" component={PartnershipsPage} />
         <Route path="/categories" component={CategoriesPage} />
+        <Route path="/areas" component={AreasPage} />
         <Route path="/areas/london" component={() => <AreaPage city="London" />} />
         <Route path="/areas/manchester" component={() => <AreaPage city="Manchester" />} />
         <Route path="/areas/birmingham" component={() => <AreaPage city="Birmingham" />} />
         <Route path="/blog" component={BlogPage} />
         <Route path="/help" component={HelpPage} />
         <Route path="/support" component={SupportPage} />
+        <Route path="/how-it-works" component={HowItWorksPage} />
         <Route component={NotFound} />
 
       </Switch>

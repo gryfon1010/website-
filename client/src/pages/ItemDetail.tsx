@@ -19,6 +19,7 @@ import { HyggloLayout } from "@/components/layout/HyggloLayout";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { getItem } from "@/services/items";
+import { createConversation } from "@/services/chat";
 import { formatCurrency } from "@/lib/format";
 
 // Helper function to get days in month
@@ -250,14 +251,8 @@ export default function ItemDetail() {
     }
 
     try {
-      // Create or get conversation
-      const response = await fetch('/api/chat/conversations', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ itemId: item.id })
-      });
-      
-      const conversation = await response.json();
+      // Create or get conversation using the service with auth headers
+      const conversation = await createConversation(item.id);
       
       // Navigate to dashboard with conversation
       navigate(`/dashboard?tab=messages&conversationId=${conversation.id}`);

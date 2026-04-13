@@ -1,233 +1,348 @@
+import { useState } from "react";
+import { useLocation } from "wouter";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { HyggloLayout } from "@/components/layout/HyggloLayout";
-import { Camera, Plus, Check } from "lucide-react";
+import { Camera, Plus, X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Card } from "@/components/ui/card";
+import { createListing, uploadFiles } from "@/services/items";
+import type { CreateListingInput } from "@shared/contracts";
+
+const CATEGORIES = [
+  "Tools & Equipment",
+  "Electronics",
+  "Cameras & Photography",
+  "Sports & Outdoors",
+  "Garden & DIY",
+  "Party & Events",
+  "Music & Instruments",
+  "Home Appliances",
+  "Vehicles & Transport",
+  "Other",
+];
 
 export default function CreateListing() {
+  const [, navigate] = useLocation();
+  const [step, setStep] = useState(1);
+  const [formData, setFormData] = useState<CreateListingInput>({
+    title: "",
+    category: "",
+    description: "",
+    pricePerDay: 0,
+    location: "London",
+    images: [],
+    features: [],
+    insuranceEnabled: true,
+    cancellationPolicy: "moderate",
+  });
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+  const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([]);
+
+  const uploadMutation = useMutation({
+    mutationFn: uploadFiles,
+    onSuccess: (files) => {
+      setFormData((prev) => ({ ...prev, images: files.map((f) => f.url) }));
+      toast.success("Images uploaded successfully!");
+    },
+    onError: () => {
+      toast.error("Failed to upload images");
+    },
+  });
+
+  const createMutation = useMutation({
+    mutationFn: createListing,
+    onSuccess: () => {
+      toast.success("Listing created successfully!");
+      navigate("/dashboard?tab=listings");
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || "Failed to create listing");
+    },
+  });
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+
+    if (uploadedFiles.length + files.length > 8) {
+      toast.error("Maximum 8 images allowed");
+      return;
+    }
+
+    // Create preview URLs
+    const previews = files.map((file) => URL.createObjectURL(file));
+    setImagePreviewUrls((prev) => [...prev, ...previews]);
+    setUploadedFiles((prev) => [...prev, ...files]);
+
+    // Upload to server
+    uploadMutation.mutate(files);
+  };
+
+  const removeImage = (index: number) => {
+    URL.revokeObjectURL(imagePreviewUrls[index]);
+    setImagePreviewUrls((prev) => prev.filter((_, i) => i !== index));
+    setUploadedFiles((prev) => prev.filter((_, i) => i !== index));
+    setFormData((prev) => ({
+      ...prev,
+      images: prev.images.filter((_, i) => i !== index),
+    }));
+  };
+
+  const handleSubmit = () => {
+    // Validation
+    if (!formData.title.trim()) {
+      toast.error("Please enter a title");
+      return;
+    }
+    if (!formData.category) {
+      toast.error("Please select a category");
+      return;
+    }
+    if (!formData.description.trim()) {
+      toast.error("Please enter a description");
+      return;
+    }
+    if (formData.pricePerDay <= 0) {
+      toast.error("Please set a valid price");
+      return;
+    }
+    if (formData.images.length === 0) {
+      toast.error("Please upload at least one image");
+      return;
+    }
+
+    createMutation.mutate(formData);
+  };
+
+  const canProceedToNext = () => {
+    switch (step) {
+      case 1:
+        return formData.category !== "";
+      case 2:
+        return formData.title.trim() !== "" && formData.description.trim() !== "";
+      case 3:
+        return formData.images.length > 0;
+      case 4:
+        return formData.pricePerDay > 0;
+      default:
+        return false;
+    }
+  };
+
   return (
     <HyggloLayout>
-      <div className="container py-12 max-w-6xl">
+      <div className="container py-12 max-w-4xl">
         <h1 className="text-4xl font-bold mb-10 tracking-tight text-gray-900">
           List your item
         </h1>
 
-        <div className="flex flex-col lg:flex-row gap-12">
-          {/* Main Form Area */}
-          <div className="flex-1 space-y-12">
-            
-            {/* Step 1 */}
-            <div className="flex gap-4">
-              <div className="w-10 h-10 rounded-full bg-pink-100 text-pink-500 flex items-center justify-center font-bold text-lg flex-shrink-0">
-                1
+        <div className="space-y-8">
+          {/* Step 1: Category */}
+          <Card className="p-6">
+            <div className="flex items-start gap-4">
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg flex-shrink-0 ${
+                step >= 1 ? "bg-pink-100 text-pink-500" : "bg-gray-100 text-gray-400"
+              }`}>
+                {step > 1 ? <Plus className="w-5 h-5" /> : "1"}
               </div>
               <div className="flex-1">
                 <h3 className="text-xl font-bold mb-4 text-gray-800">Select category</h3>
-                <select className="w-full h-12 px-4 rounded-lg border border-gray-300 bg-white text-gray-700 outline-none focus:border-pink-300">
+                <select
+                  className="w-full h-12 px-4 rounded-lg border border-gray-300 bg-white text-gray-700 outline-none focus:border-pink-300"
+                  value={formData.category}
+                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                >
                   <option value="">Select a category</option>
-                  <option value="tools">Tools & Equipment</option>
-                  <option value="electronics">Electronics</option>
+                  {CATEGORIES.map((cat) => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
                 </select>
               </div>
             </div>
+          </Card>
 
-            {/* Step 2 */}
-            <div className="flex gap-4">
-              <div className="w-10 h-10 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center font-bold text-lg flex-shrink-0">
-                2
+          {/* Step 2: Description */}
+          <Card className="p-6">
+            <div className="flex items-start gap-4">
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg flex-shrink-0 ${
+                step >= 2 ? "bg-pink-100 text-pink-500" : "bg-gray-100 text-gray-400"
+              }`}>
+                {step > 2 ? <Plus className="w-5 h-5" /> : "2"}
               </div>
-              <div className="flex-1">
-                <h3 className="text-xl font-bold mb-4 text-gray-400">Describe your item</h3>
-                <div className="space-y-4 opacity-50 pointer-events-none">
-                  <div>
-                     <label className="text-xs font-semibold text-gray-500 mb-1 block">Title</label>
-                     <input type="text" className="w-full h-12 px-4 rounded-lg border border-gray-300 bg-white" />
-                  </div>
-                  <div>
-                     <label className="text-xs font-semibold text-gray-500 mb-1 block">Describe the item in as much detail as possible</label>
-                     <textarea className="w-full h-32 p-4 rounded-lg border border-gray-300 bg-white resize-none" />
-                  </div>
+              <div className="flex-1 space-y-4">
+                <h3 className="text-xl font-bold text-gray-800">Describe your item</h3>
+                <div>
+                  <Label htmlFor="title">Title</Label>
+                  <Input
+                    id="title"
+                    placeholder="e.g., Professional DSLR Camera"
+                    value={formData.title}
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    className="mt-2"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="description">Description</Label>
+                  <Textarea
+                    id="description"
+                    placeholder="Describe your item in detail..."
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    className="mt-2 min-h-[120px]"
+                  />
                 </div>
               </div>
             </div>
+          </Card>
 
-            {/* Step 3 */}
-            <div className="flex gap-4">
-              <div className="w-10 h-10 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center font-bold text-lg flex-shrink-0">
-                3
+          {/* Step 3: Images */}
+          <Card className="p-6">
+            <div className="flex items-start gap-4">
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg flex-shrink-0 ${
+                step >= 3 ? "bg-pink-100 text-pink-500" : "bg-gray-100 text-gray-400"
+              }`}>
+                {step > 3 ? <Plus className="w-5 h-5" /> : "3"}
               </div>
               <div className="flex-1">
-                <h3 className="text-xl font-bold mb-2 text-gray-400">Pictures</h3>
-                <p className="text-xs text-gray-400 mb-4 opacity-50">Upload pictures in landscape format (4:3)<br/>In order for pictures to look good, they should be landscaped. Portrait pictures will not be fully displayed.</p>
+                <h3 className="text-xl font-bold mb-2 text-gray-800">Pictures</h3>
+                <p className="text-xs text-gray-500 mb-4">
+                  Upload up to 8 pictures. Landscape format (4:3) works best.
+                </p>
                 
-                <div className="grid grid-cols-4 gap-4 opacity-50 pointer-events-none">
-                  {[...Array(8)].map((_, i) => (
-                    <div key={i} className="aspect-[4/3] border border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50">
-                      <Camera className="w-8 h-8 text-gray-300" />
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {imagePreviewUrls.map((url, index) => (
+                    <div key={index} className="relative aspect-[4/3] rounded-lg overflow-hidden group">
+                      <img src={url} alt={`Preview ${index + 1}`} className="w-full h-full object-cover" />
+                      <button
+                        onClick={() => removeImage(index)}
+                        className="absolute top-2 right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
                     </div>
                   ))}
+                  {imagePreviewUrls.length < 8 && (
+                    <label className="aspect-[4/3] border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-pink-400 hover:bg-pink-50 transition-colors">
+                      <Camera className="w-8 h-8 text-gray-400 mb-2" />
+                      <span className="text-xs text-gray-500">Add Photo</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={handleImageUpload}
+                        className="hidden"
+                      />
+                    </label>
+                  )}
                 </div>
               </div>
             </div>
+          </Card>
 
-            {/* Step 4 */}
-            <div className="flex gap-4">
-              <div className="w-10 h-10 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center font-bold text-lg flex-shrink-0">
+          {/* Step 4: Price & Settings */}
+          <Card className="p-6">
+            <div className="flex items-start gap-4">
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg flex-shrink-0 ${
+                step >= 4 ? "bg-pink-100 text-pink-500" : "bg-gray-100 text-gray-400"
+              }`}>
                 4
               </div>
-              <div className="flex-1">
-                <h3 className="text-xl font-bold mb-2 text-gray-400">Price</h3>
-                <p className="text-xs text-gray-400 mb-4 opacity-50">You can offer lower prices for longer bookings. The rental price is calculated according to the lowest possible price level.</p>
-                <div className="grid grid-cols-3 gap-4 opacity-50 pointer-events-none">
-                   <div>
-                     <label className="text-xs font-semibold text-gray-500 mb-1 block">Price for 1 day (required)</label>
-                     <div className="relative">
-                       <span className="absolute left-4 top-3 text-gray-500">£</span>
-                       <input type="text" className="w-full h-12 pl-8 rounded-lg border border-gray-300 bg-white" />
-                     </div>
-                   </div>
-                   <div>
-                     <label className="text-xs font-semibold text-gray-500 mb-1 block">Price for 3 days</label>
-                     <div className="relative">
-                       <span className="absolute left-4 top-3 text-gray-500">£</span>
-                       <input type="text" className="w-full h-12 pl-8 rounded-lg border border-gray-300 bg-white" />
-                     </div>
-                   </div>
-                   <div>
-                     <label className="text-xs font-semibold text-gray-500 mb-1 block">Price for 7 days</label>
-                     <div className="relative">
-                       <span className="absolute left-4 top-3 text-gray-500">£</span>
-                       <input type="text" className="w-full h-12 pl-8 rounded-lg border border-gray-300 bg-white" />
-                     </div>
-                   </div>
+              <div className="flex-1 space-y-6">
+                <h3 className="text-xl font-bold text-gray-800">Price & Settings</h3>
+                
+                <div>
+                  <Label htmlFor="price">Price per day (£)</Label>
+                  <Input
+                    id="price"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    placeholder="0.00"
+                    value={formData.pricePerDay || ""}
+                    onChange={(e) => setFormData({ ...formData, pricePerDay: parseFloat(e.target.value) || 0 })}
+                    className="mt-2"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="location">Location</Label>
+                  <Input
+                    id="location"
+                    placeholder="e.g., London"
+                    value={formData.location}
+                    onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                    className="mt-2"
+                  />
+                </div>
+
+                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                  <div>
+                    <Label className="text-base">Enable Insurance Protection</Label>
+                    <p className="text-sm text-gray-500 mt-1">Add damage protection for renters (£5/day)</p>
+                  </div>
+                  <Switch
+                    checked={formData.insuranceEnabled}
+                    onCheckedChange={(checked) => setFormData({ ...formData, insuranceEnabled: checked })}
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="cancellation">Cancellation Policy</Label>
+                  <select
+                    id="cancellation"
+                    className="w-full h-12 px-4 rounded-lg border border-gray-300 bg-white mt-2"
+                    value={formData.cancellationPolicy}
+                    onChange={(e) => setFormData({ ...formData, cancellationPolicy: e.target.value })}
+                  >
+                    <option value="flexible">Flexible - Full refund up to 1 day before</option>
+                    <option value="moderate">Moderate - Full refund up to 3 days before</option>
+                    <option value="strict">Strict - 50% refund up to 7 days before</option>
+                  </select>
                 </div>
               </div>
             </div>
+          </Card>
 
-            {/* Step 5 */}
-            <div className="flex gap-4">
-              <div className="w-10 h-10 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center font-bold text-lg flex-shrink-0">
-                5
-              </div>
-              <div className="flex-1">
-                <h3 className="text-xl font-bold mb-2 text-gray-400">Where can the item be handed over?</h3>
-                <p className="text-xs text-gray-400 mb-4 opacity-50">Your exact address will not be shown before the rentals is paid and verified. Read more</p>
-                <button className="flex items-center gap-2 pl-4 pr-6 py-2.5 rounded-full font-medium text-white shadow-sm opacity-50 pointer-events-none" style={{ backgroundColor: "#B483B8" }}>
-                  <Plus className="w-5 h-5" /> Add a location
-                </button>
-              </div>
-            </div>
-
-            {/* Step 6 */}
-            <div className="flex gap-4">
-              <div className="w-10 h-10 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center font-bold text-lg flex-shrink-0">
-                6
-              </div>
-              <div className="flex-1">
-                <h3 className="text-xl font-bold mb-4 text-gray-400">Cancellation Terms</h3>
-                <div className="flex gap-8 mb-4 opacity-50 pointer-events-none">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <div className="w-5 h-5 rounded-full border border-gray-300 flex items-center justify-center bg-gray-200">
-                    </div>
-                    <span className="text-gray-500 font-medium text-sm">Flexible</span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <div className="w-5 h-5 rounded-full border border-gray-300"></div>
-                    <span className="text-gray-500 font-medium text-sm">Medium</span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <div className="w-5 h-5 rounded-full border border-gray-300"></div>
-                    <span className="text-gray-500 font-medium text-sm">Strict</span>
-                  </label>
-                </div>
-                <div className="bg-white p-0 opacity-50 pointer-events-none">
-                  <p className="text-sm text-gray-500 mb-2">
-                    <span className="font-bold text-gray-800">Flexible </span>
-                    - If cancelled 2 days before the rental period, 100% of the rental amount will be refunded. If cancelled the day before the rental period, 50% of the rental amount will be refunded.
-                  </p>
-                  <a href="#" className="text-sm hover:underline" style={{ color: "var(--logo-color)" }}>Read more about the cancellation policy</a>
-                </div>
-              </div>
-            </div>
-
-            {/* Step 7 */}
-            <div className="flex gap-4">
-              <div className="w-10 h-10 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center font-bold text-lg flex-shrink-0">
-                7
-              </div>
-              <div className="flex-1">
-                <h3 className="text-xl font-bold mb-4 text-gray-400">Value of item</h3>
-                <div className="opacity-50 pointer-events-none">
-                   <div className="relative w-64 mb-2">
-                     <span className="absolute left-4 top-3 text-gray-500">£</span>
-                     <input type="text" className="w-full h-12 pl-8 rounded-lg border border-gray-300 bg-white" />
-                   </div>
-                   <p className="text-sm text-gray-400 mb-1">If you would sell it today on e.g. Facebook Marketplace - what would it be worth?</p>
-                   <a href="#" className="text-sm hover:underline" style={{ color: "var(--logo-color)" }}>Read more about item valuation</a>
-                </div>
-              </div>
-            </div>
-
-            {/* Submit */}
-            <div className="pl-14 pb-12">
-               <Button className="rounded-full px-8 py-6 text-sm font-semibold text-white shadow-sm opacity-50 pointer-events-none" style={{ backgroundColor: "var(--cta-green)" }}>
-                 Publish listing!
-               </Button>
-            </div>
-
-          </div>
-
-          {/* Right Sidebar */}
-          <div className="w-full lg:w-[340px] space-y-6">
-            
-            {/* Download app card */}
-            <div className="border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm">
-               <div className="h-40 bg-gray-100 relative overflow-hidden flex items-center justify-center text-gray-400 text-sm font-medium">
-                 [ Phone Illustration ]
-               </div>
-               <div className="p-6">
-                 <h3 className="text-xl font-bold mb-3 text-gray-900 tracking-tight">Download our app!</h3>
-                 <p className="text-sm text-gray-600 mb-4">This is a good time to download our app to make it easier for you.</p>
-                 <ul className="space-y-3 mb-6">
-                   <li className="flex gap-2 text-xs text-gray-600">
-                     <div className="mt-1 w-1 h-1 bg-gray-800 rounded-full flex-shrink-0"></div>
-                     It is easier to take pictures with your phone
-                   </li>
-                   <li className="flex gap-2 text-xs text-gray-600">
-                     <div className="mt-1 w-1 h-1 bg-gray-800 rounded-full flex-shrink-0"></div>
-                     You will receive notifications when someone contacts you
-                   </li>
-                   <li className="flex gap-2 text-xs text-gray-600">
-                     <div className="mt-1 w-1 h-1 bg-gray-800 rounded-full flex-shrink-0"></div>
-                     It is much easier to post ads with the app. Click on one of the buttons to download or continue below.
-                   </li>
-                 </ul>
-                 <div className="flex gap-2">
-                   <div className="border border-gray-300 rounded-md px-3 py-1.5 flex items-center gap-2 cursor-pointer hover:bg-gray-50 flex-1">
-                     <div className="text-[10px] leading-tight text-gray-800">
-                       Download on the<br/>
-                       <span className="text-sm font-semibold">App Store</span>
-                     </div>
-                   </div>
-                   <div className="border border-gray-300 rounded-md px-3 py-1.5 flex items-center gap-2 cursor-pointer hover:bg-gray-50 flex-1">
-                     <div className="text-[10px] leading-tight text-gray-800">
-                       GET IT ON<br/>
-                       <span className="text-sm font-semibold">Google Play</span>
-                     </div>
-                   </div>
-                 </div>
-               </div>
-            </div>
-
-            {/* Dropped off locations card */}
-            <div className="border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm p-6 text-center">
-               <div className="w-24 h-24 mx-auto bg-gray-100 rounded-full mb-4 flex items-center justify-center text-gray-400 text-xs">
-                 [ Map Icon ]
-               </div>
-               <h3 className="text-lg font-bold mb-2 text-gray-900 tracking-tight">Can your item be dropped off in several places?</h3>
-               <p className="text-xs text-gray-600">
-                 You might be able to bring the item to work and meet up there? Add location(s) below to increase the chance of getting your item rented out!
-               </p>
-            </div>
-
+          {/* Navigation Buttons */}
+          <div className="flex gap-4 pt-4">
+            {step > 1 && (
+              <Button
+                variant="outline"
+                className="flex-1 h-12 text-lg"
+                onClick={() => setStep(step - 1)}
+              >
+                Previous
+              </Button>
+            )}
+            {step < 4 ? (
+              <Button
+                className="flex-1 h-12 text-lg bg-pink-500 hover:bg-pink-600"
+                onClick={() => canProceedToNext() && setStep(step + 1)}
+                disabled={!canProceedToNext()}
+              >
+                Next Step
+              </Button>
+            ) : (
+              <Button
+                className="flex-1 h-12 text-lg bg-pink-500 hover:bg-pink-600"
+                onClick={handleSubmit}
+                disabled={createMutation.isPending || !canProceedToNext()}
+              >
+                {createMutation.isPending ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Creating Listing...
+                  </>
+                ) : (
+                  "Create Listing"
+                )}
+              </Button>
+            )}
           </div>
         </div>
       </div>
